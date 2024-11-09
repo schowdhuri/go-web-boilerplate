@@ -1,0 +1,17 @@
+<!-- layouts/base.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{block "title" .}}Default Title{{end}}</title>
+    <link rel="stylesheet" href="{{asset "/css/main.css"}}">
+    <link rel="shortcut icon" href="{{asset "/images/favicon.png"}}" type="image/png">
+    {{block "head" .}}{{end}}
+</head>
+<body>
+    {{block "content" .}}{{end}}
+    
+    <script src="{{asset "/js/main.js"}}" defer></script>
+    {{block "scripts" .}}{{end}}
+</body>
+</html>

@@ -1,0 +1,13 @@
+/tmp
+/bin
+/build
+/dist
+
+node_modules
+npm-debug.log
+pnpm-debug.log
+npm-debug.log.*
+
+.env
+.DS_Store
+*.log

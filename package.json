@@ -1,0 +1,31 @@
+{
+  "name": "go-ssr",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "clean": "rimraf build",
+    "watch:js": "node scripts/scripts.build.js --watch",
+    "watch:css": "node scripts/styles.build.js --watch",
+    "watch:public": "node scripts/public.build.js --watch",
+    "dev": "concurrently \"pnpm watch:js\" \"pnpm watch:css\" \"pnpm watch:public\"",
+    "build:js": "node scripts/scripts.build.js",
+    "build:css": "node scripts/styles.build.js",
+    "build:public": "node scripts/public.build.js",
+    "prebuild": "pnpm clean",
+    "build": "pnpm build:js && pnpm build:css && pnpm build:public"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.20",
+    "chokidar": "^4.0.1",
+    "concurrently": "^9.1.0",
+    "esbuild": "^0.24.0",
+    "glob": "^11.0.0",
+    "postcss": "^8.4.47",
+    "rimraf": "^6.0.1",
+    "tailwindcss": "^3.4.14"
+  }
+}
