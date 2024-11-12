@@ -3,20 +3,23 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 	"sync"
 
 	"github.com/go-chi/chi/v5"
 	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 
+	"viabl.ventures/gossr/internal/app"
+	"viabl.ventures/gossr/internal/app/admin"
+	"viabl.ventures/gossr/internal/app/home"
 	"viabl.ventures/gossr/internal/assets"
-	"viabl.ventures/gossr/internal/handlers"
+	"viabl.ventures/gossr/internal/config"
 	"viabl.ventures/gossr/internal/middleware"
 	"viabl.ventures/gossr/internal/templates"
 )
 
 func main() {
-	isDev := os.Getenv("GO_ENV") != "production"
+	conf := config.NewConfig()
+	isDev := conf.GoEnv == "development"
 	assetPipe := assets.NewAssetPipeline(isDev)
 	renderer := templates.NewRenderer(assetPipe, isDev)
 
@@ -32,11 +35,16 @@ func main() {
 	fileServer := http.FileServer(http.Dir("dist"))
 	r.Handle("/dist/*", http.StripPrefix("/dist/", fileServer))
 
-	// Routes
-	r.Get("/", handlers.CreateHomePageHandler(renderer))
-	// r.Get("/admin/*", adminAuthMiddleware(handleAdmin))
+	// initialize app containers
+	baseContainer := app.NewBaseContainer(conf, renderer)
+	adminContainer := admin.NewAdminContainer(baseContainer)
+	homeContainer := home.NewHomeContainer(baseContainer)
 
-	port := os.Getenv("PORT")
+	// Routes
+	r.Route("/", homeContainer.Router.GetRoutes)
+	r.Route("/admin", adminContainer.Router.GetRoutes)
+
+	port := conf.Port
 	if port == "" {
 		port = "8080"
 	}
