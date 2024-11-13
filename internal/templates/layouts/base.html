@@ -1,17 +1,21 @@
 <!-- layouts/base.html -->
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <title>{{block "title" .}}Default Title{{end}}</title>
-    <link rel="stylesheet" href="{{asset "/css/main.css"}}">
-    <link rel="shortcut icon" href="{{asset "/images/favicon.png"}}" type="image/png">
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{block "title" .}}Webapp{{end}}</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="{{asset "/images/favicon.png"}}"
+    type="image/png">
+
+    <!-- Head -->
     {{block "head" .}}{{end}}
-</head>
-<body>
+  </head>
+  <body>
+    <!-- Main Content -->
     {{block "content" .}}{{end}}
-    
-    <script src="{{asset "/js/main.js"}}" defer></script>
+
+    <!-- Scripts -->
     {{block "scripts" .}}{{end}}
-</body>
+  </body>
 </html>

@@ -23,7 +23,7 @@ func NewAssetPipeline(isDev bool) *AssetPipeline {
 }
 
 func (ap *AssetPipeline) GetAssetURL(path string) string {
-	path = filepath.Join("dist", path)
+	path = filepath.Join("/", "dist", path)
 
 	if ap.IsDevelopment {
 		return path

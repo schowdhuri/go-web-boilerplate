@@ -8,7 +8,6 @@ import (
 )
 
 type EnvVars struct {
-	RecaptchaSecret string
 	BrevoAPIKey     string
 	BrevoSender     string
 	DbHost          string
@@ -18,6 +17,8 @@ type EnvVars struct {
 	DbPort          string
 	GoEnv           string
 	Port            string
+	PublicUrl       string
+	RecaptchaSecret string
 }
 
 func NewConfig() *EnvVars {
@@ -27,8 +28,7 @@ func NewConfig() *EnvVars {
 	}
 
 	return &EnvVars{
-		// recaptcha
-		RecaptchaSecret: os.Getenv("RECAPTCHA_SECRET"),
+
 		// brevo (SendInBlue)
 		BrevoAPIKey: os.Getenv("BREVO_API_KEY"),
 		BrevoSender: os.Getenv("BREVO_SENDER"),
@@ -40,5 +40,8 @@ func NewConfig() *EnvVars {
 		DbPort:     os.Getenv("DB_PORT"),
 		GoEnv:      os.Getenv("GO_ENV"),
 		Port:       os.Getenv("PORT"),
+		PublicUrl:  os.Getenv("PUBLIC_URL"),
+		// recaptcha
+		RecaptchaSecret: os.Getenv("RECAPTCHA_SECRET"),
 	}
 }

@@ -13,16 +13,14 @@ import (
 var funcMap template.FuncMap
 
 type Renderer struct {
-	templates *template.Template
+	templates map[string]*template.Template
 	assetPipe *assets.AssetPipeline
-	cache     map[string]*template.Template
 	isDev     bool
 }
 
 func NewRenderer(assetPipe *assets.AssetPipeline, isDev bool) *Renderer {
 	r := &Renderer{
 		assetPipe: assetPipe,
-		cache:     make(map[string]*template.Template),
 		isDev:     isDev,
 	}
 
@@ -37,45 +35,42 @@ func NewRenderer(assetPipe *assets.AssetPipeline, isDev bool) *Renderer {
 		},
 	}
 
-	// Parse base templates
-	r.templates = template.New("").Funcs(funcMap)
-
 	// Parse all templates
-	if err := r.parseTemplates(); err != nil {
-		panic(err)
-	}
-
+	r.parseTemplates()
 	return r
 }
 
-func (r *Renderer) parseTemplates() error {
-	// Parse all .html files in templates directory
-	pattern := filepath.Join("internal", "templates", "**", "*.html")
-	templateFiles, err := filepath.Glob(pattern)
-	if err != nil {
-		return err
+func (r *Renderer) parseTemplates() {
+	r.templates = make(map[string]*template.Template)
+	tpl_map := map[string][]string{
+		"home.html":       {"layouts/base.html", "pages/home.html"},
+		"signin.html":     {"layouts/base.html", "pages/signin.html"},
+		"admin_home.html": {"layouts/base.html", "pages/admin_home.html"},
 	}
-	_, err = r.templates.ParseFiles(templateFiles...)
-	return err
+
+	for name, deps := range tpl_map {
+		files := make([]string, len(deps))
+		for i, dep := range deps {
+			files[i] = filepath.Join("internal", "templates", dep)
+		}
+		tpl, err := template.New(name).Funcs(funcMap).ParseFiles(files...)
+		if err != nil {
+			fmt.Println("error parsing template", err)
+		} else {
+			r.templates[name] = tpl
+		}
+	}
 }
 
 func (r *Renderer) RenderTemplate(w http.ResponseWriter, name string, data interface{}) error {
 	// In development, reload templates on every request
 	if r.isDev {
-		r.templates = template.New("").Funcs(funcMap)
-		if err := r.parseTemplates(); err != nil {
-			fmt.Println("error parsing templates", err)
-			return err
-		}
+		r.parseTemplates()
 	}
-	tmpl := r.templates.Lookup(name)
-	if tmpl == nil {
-		return fmt.Errorf("template %s not found", name)
-	}
-
 	// Buffer the output to handle errors and enable minification
 	var buf bytes.Buffer
-	if err := tmpl.Execute(&buf, data); err != nil {
+	// TODO: find a better way to render the base template
+	if err := r.templates[name].ExecuteTemplate(&buf, "base.html", data); err != nil {
 		fmt.Println("error executing template", err)
 		return err
 	}

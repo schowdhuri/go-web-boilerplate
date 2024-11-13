@@ -9,7 +9,6 @@ import (
 	"gorm.io/gorm/logger"
 
 	"viabl.ventures/gossr/internal/config"
-	"viabl.ventures/gossr/internal/db/models"
 )
 
 func InitDB(conf *config.EnvVars) *gorm.DB {
@@ -34,7 +33,6 @@ func InitDB(conf *config.EnvVars) *gorm.DB {
 	var DB *gorm.DB = db
 
 	// Auto Migrate the schemas
-	DB.AutoMigrate(&models.AdminUser{}, &models.LoginCode{})
-
+	// DB.AutoMigrate(&models.AdminUser{}, &models.LoginCode{}, &models.AdminSession{})
 	return DB
 }

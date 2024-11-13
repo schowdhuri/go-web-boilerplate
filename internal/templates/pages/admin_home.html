@@ -1,0 +1,27 @@
+<!-- Admin Home Page -->
+
+{{define "title"}}{{.Title}}{{end}}
+
+<!-- head -->
+{{define "head"}} <link rel="stylesheet" href="{{asset "/css/home.css"}}" >
+{{end}}
+
+<!-- content -->
+{{define "content"}}
+<div class="container mx-auto px-4">
+  <h1 class="text-4xl font-bold text-blue-600">Admin Dashboard</h1>
+  <p class="mt-4">This is the admin dashboard</p>
+
+  <div>
+    <form action="/admin/signout" method="post">
+      <button
+        class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Sign Out
+      </button>
+    </form>
+  </div>
+</div>
+{{end}}
+
+<!-- scripts -->

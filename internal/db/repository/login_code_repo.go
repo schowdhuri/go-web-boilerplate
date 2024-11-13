@@ -29,10 +29,10 @@ func (r *LoginCodeRepository) Create(code string, adminUserID uint) (*models.Log
 	return loginCode, err
 }
 
-func (r *LoginCodeRepository) FindByCode(email, code string) (*models.LoginCode, error) {
+func (r *LoginCodeRepository) FindByCode(code string, adminUserID uint) (*models.LoginCode, error) {
 	var loginCode models.LoginCode
 	// query the database for the login code and check if it hasnt expired
-	err := r.db.Where("email = ? AND code = ? AND expires_at > ?", email, code, time.Now()).First(&loginCode).Error
+	err := r.db.Where("admin_user_id = ? AND code = ? AND expires_at > ?", adminUserID, code, time.Now()).First(&loginCode).Error
 	return &loginCode, err
 }
 

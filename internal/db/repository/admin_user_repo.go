@@ -9,8 +9,8 @@ type AdminUserRepository struct {
 	db *gorm.DB
 }
 
-func NewAdminUserRepository() *AdminUserRepository {
-	return &AdminUserRepository{}
+func NewAdminUserRepository(db *gorm.DB) *AdminUserRepository {
+	return &AdminUserRepository{db}
 }
 
 func (r *AdminUserRepository) FindByEmail(email string) (*models.AdminUser, error) {

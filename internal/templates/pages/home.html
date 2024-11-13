@@ -1,7 +1,12 @@
-{{template "base.html" .}}
-<!--  -->
+<!-- Home Page -->
+
 {{define "title"}}{{.Title}}{{end}}
-<!-- content  -->
+
+<!-- head -->
+{{define "head"}} <link rel="stylesheet" href="{{asset "/css/home.css"}}" >
+{{end}}
+
+<!-- content -->
 {{define "content"}}
 <div class="container mx-auto px-4">
   <h1 class="text-4xl font-bold text-blue-600">Welcome to My Website</h1>
@@ -10,3 +15,5 @@
   </p>
 </div>
 {{end}}
+
+<!-- scripts -->

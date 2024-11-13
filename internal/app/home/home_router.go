@@ -16,14 +16,13 @@ func NewHomeRouter(renderer *templates.Renderer) *HomeRouter {
 }
 
 func (router *HomeRouter) GetRoutes(r chi.Router) {
-	r.Get("/", homePageView(router.renderer))
+	r.Get("/", router.homePageView)
 }
 
-func homePageView(renderer *templates.Renderer) func(http.ResponseWriter, *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
-		data := map[string]interface{}{
-			"Title": "Home Page",
-		}
-		renderer.RenderTemplate(w, "home.html", data)
+func (router *HomeRouter) homePageView(w http.ResponseWriter, r *http.Request) {
+	data := map[string]interface{}{
+		"Title": "Home Page",
 	}
+	router.renderer.RenderTemplate(w, "home.html", data)
+
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -49,12 +50,21 @@ func main() {
 		port = "8080"
 	}
 
-	log.Printf("Server starting on :%s", port)
-	log.Fatal(http.ListenAndServe(":"+port, r))
+	var wg sync.WaitGroup
+	if isDev {
+		wg.Add(3)
+	} else {
+		wg.Add(1)
+	}
+
+	go func() {
+		defer wg.Done()
+		log.Printf("Server starting on :%s\n", port)
+		log.Fatal(http.ListenAndServe(":"+port, r))
+	}()
 
 	if isDev {
-		var wg sync.WaitGroup
-		wg.Add(3)
+		fmt.Println("Starting asset pipeline...")
 		go func() {
 			defer wg.Done()
 			assets.BuildJs(true)

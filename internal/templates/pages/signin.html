@@ -1,12 +1,16 @@
-{{template "base.html" .}}
-<!--  -->
+<!-- Admin Signin Page -->
 {{define "title"}}{{.Title}}{{end}}
+
+{{define "head"}}
+<link rel="stylesheet" href="{{asset "/css/signin.css"}}">
+{{end}}
+
 <!-- content  -->
 {{define "content"}}
-
 <div class="container mx-auto p-4">
   <h1 class="text-3xl font-bold mb-4">Passwordless Sign-in</h1>
-  <form id="signin-form">
+  <form method="post" action="">
+    <div>
     <label for="email" class="block mb-2 font-medium text-gray-700"
       >Email Address</label
     >
@@ -16,38 +20,29 @@
       name="email"
       class="border border-gray-300 p-2 rounded"
       required
+      {{if .Email}}
+      value="{{.Email}}"
+      {{end}}
     />
+  </div>
+  {{if .Email}}
+  <p>A signin link has been sent to your email</p>
+  {{end}}
     <button
       type="submit"
       class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
     >
-      Sign In
+    {{if .Email}}
+      Resend Verification Code
+    {{else}}
+      Send Verification Code
+    {{end}}
     </button>
   </form>
-  <p id="message" class="mt-4"></p>
+  <p class="mt-4 color-danger">{{ .Error }}</p>
 </div>
-<script>
-  const form = document.getElementById("signin-form");
-  const message = document.getElementById("message");
+{{end}}
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = document.getElementById("email").value;
-
-    // Send a POST request to your backend API to send the sign-in link
-    const response = await fetch("/api/send-signin-link", {
-      method: "POST",
-      body: JSON.stringify({ email }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (response.ok) {
-      message.textContent = "Sign-in link sent to your email.";
-    } else {
-      message.textContent = "Error sending sign-in link. Please try again.";
-    }
-  });
-</script>
+{{ define "scripts" }}
+<script src="{{asset "/js/signin.js"}}" defer></script>
 {{end}}

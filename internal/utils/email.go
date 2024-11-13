@@ -23,7 +23,7 @@ func (s *EmailService) SendMail(to, subject, htmlContent string) error {
 	senderEmail := s.config.BrevoSender
 
 	payload := map[string]interface{}{
-		"sender":      map[string]string{"email": senderEmail, "name": "Contact Form"},
+		"sender":      map[string]string{"email": senderEmail, "name": "Webapp"},
 		"to":          []map[string]string{{"email": to}},
 		"subject":     subject,
 		"htmlContent": htmlContent,
