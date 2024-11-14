@@ -1,0 +1,6 @@
+bin
+dist
+tmp
+.env
+node_modules
+.air.toml
