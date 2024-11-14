@@ -11,7 +11,7 @@ import (
 
 	"viabl.ventures/gossr/internal/app"
 	"viabl.ventures/gossr/internal/app/admin"
-	"viabl.ventures/gossr/internal/app/home"
+	home "viabl.ventures/gossr/internal/app/website"
 	"viabl.ventures/gossr/internal/assets"
 	"viabl.ventures/gossr/internal/config"
 	"viabl.ventures/gossr/internal/middleware"
@@ -39,10 +39,10 @@ func main() {
 	// initialize app containers
 	baseContainer := app.NewBaseContainer(conf, renderer)
 	adminContainer := admin.NewAdminContainer(baseContainer)
-	homeContainer := home.NewHomeContainer(baseContainer)
+	websiteContainer := home.NewWebsiteContainer(baseContainer)
 
 	// Routes
-	r.Route("/", homeContainer.Router.GetRoutes)
+	r.Route("/", websiteContainer.Router.GetRoutes)
 	r.Route("/admin", adminContainer.Router.GetRoutes)
 
 	port := conf.Port
@@ -52,7 +52,7 @@ func main() {
 
 	var wg sync.WaitGroup
 	if isDev {
-		wg.Add(3)
+		wg.Add(4)
 	} else {
 		wg.Add(1)
 	}

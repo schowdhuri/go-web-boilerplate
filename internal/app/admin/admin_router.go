@@ -13,10 +13,10 @@ import (
 )
 
 type AdminRouter struct {
-	conf          *config.EnvVars
-	renderer      *templates.Renderer
-	emailService  *utils.EmailService
-	signinService *AuthService
+	conf         *config.EnvVars
+	renderer     *templates.Renderer
+	emailService *utils.EmailService
+	authService  *AuthService
 }
 
 func NewAdminRouter(conf *config.EnvVars, renderer *templates.Renderer, emailService *utils.EmailService, signinService *AuthService) *AdminRouter {
@@ -26,7 +26,7 @@ func NewAdminRouter(conf *config.EnvVars, renderer *templates.Renderer, emailSer
 func (router *AdminRouter) GetRoutes(r chi.Router) {
 	// Protected routes
 	r.Group(func(r chi.Router) {
-		r.Use(CreateAdminSessionMiddleware(router.signinService))
+		r.Use(CreateAdminSessionMiddleware(router.authService))
 		r.Get("/", router.adminHomeView)
 		r.Post("/signout", router.signoutHandler)
 	})
@@ -66,7 +66,7 @@ func (router *AdminRouter) adminGenerateLoginCode(w http.ResponseWriter, r *http
 	// TODO: validate recaptcha
 
 	// Generate a one-time code (OTP)
-	loginCode, err := router.signinService.GenerateCode(email)
+	loginCode, err := router.authService.GenerateCode(email)
 	if err != nil {
 		data["Error"] = err.Error()
 		w.WriteHeader(http.StatusBadRequest)
@@ -109,12 +109,12 @@ func (router *AdminRouter) adminValidateLoginCode(w http.ResponseWriter, r *http
 	}
 
 	// Validate the code
-	_, err = router.signinService.ValidateAndUseCode(string(email), string(code))
+	_, err = router.authService.ValidateAndUseCode(string(email), string(code))
 	if err != nil {
 		http.Redirect(w, r, "/admin/signin?error=Invalid code", http.StatusSeeOther)
 		return
 	}
-	cookie, err := router.signinService.CreateSessionCookie(string(email))
+	cookie, err := router.authService.CreateSessionCookie(string(email))
 	if err != nil {
 		// Redirect to the signin page with an error message
 		http.Redirect(w, r, "/admin/signin?error=Invalid code", http.StatusSeeOther)
@@ -134,7 +134,7 @@ func (router *AdminRouter) signoutHandler(w http.ResponseWriter, r *http.Request
 		http.Redirect(w, r, "/admin/signin?error=unauthorized", http.StatusSeeOther)
 		return
 	}
-	err = router.signinService.DeleteSession(cookie.Value)
+	err = router.authService.DeleteSession(cookie.Value)
 	if err != nil {
 		http.Redirect(w, r, "/admin/signin?error=unauthorized", http.StatusSeeOther)
 		return

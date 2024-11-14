@@ -7,22 +7,21 @@ import (
 	"viabl.ventures/gossr/internal/templates"
 )
 
-type HomeRouter struct {
+type WebsiteRouter struct {
 	renderer *templates.Renderer
 }
 
-func NewHomeRouter(renderer *templates.Renderer) *HomeRouter {
-	return &HomeRouter{renderer}
+func NewWebsiteRouter(renderer *templates.Renderer) *WebsiteRouter {
+	return &WebsiteRouter{renderer}
 }
 
-func (router *HomeRouter) GetRoutes(r chi.Router) {
+func (router *WebsiteRouter) GetRoutes(r chi.Router) {
 	r.Get("/", router.homePageView)
 }
 
-func (router *HomeRouter) homePageView(w http.ResponseWriter, r *http.Request) {
+func (router *WebsiteRouter) homePageView(w http.ResponseWriter, r *http.Request) {
 	data := map[string]interface{}{
 		"Title": "Home Page",
 	}
 	router.renderer.RenderTemplate(w, "home.html", data)
-
 }
